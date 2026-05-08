@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="css/style.css">
+        <title>Login</title>
+    </head>
+    <body>
+        <div class="login form">
+        <h2>Login page</h2>
+        <form action="Main.html" method="get">
+            <p>Please use your credentials to login</p>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+            <br>
+            <label for="remember">Remember me:</label>
+
+            <!-- Captcha can be added here in the future -->
+
+            <input type="checkbox" id="remember" name="remember">
+            <button type="submit">Login</button>
+        </form>
+            <p class="form-footer">Forget Password? <a href="ForgotPassword.html">Reset it here</a></p>
+            <p class="form-footer">Don't have an account? <a href="Registration.html">Create one here</a></p>
+        </div>
+    </body>
+</html>

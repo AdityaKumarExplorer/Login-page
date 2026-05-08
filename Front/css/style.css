@@ -1,0 +1,88 @@
+/* Center everything on the screen */
+body {
+    background-color: #2cdda2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* The Card Container */
+.login.form {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px;
+}
+
+/* Header styling */
+h2 {
+    margin: 0 0 10px;
+    color: #333;
+    text-align: center;
+}
+
+p {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Label & Input styling */
+label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Important for width */
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Checkbox alignment */
+input[type="checkbox"] {
+    margin-bottom: 25px;
+    cursor: pointer;
+}
+
+label[for="remember"] {
+    display: inline-block;
+    margin-bottom: 25px;
+    cursor: pointer;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
