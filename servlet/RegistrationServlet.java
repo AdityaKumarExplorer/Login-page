@@ -1,8 +1,9 @@
 package servlet;
 
+import database.DataConnector;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import database.DatabaseConnector;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.*;
 
@@ -24,7 +25,7 @@ public class RegistrationServlet extends HttpServlet {
         }
 
         // 2. Try to register
-        DatabaseConnector db = new DatabaseConnector();
+        DataConnector db = new DataConnector();
         String result = db.registerUser(email, password);
         db.closeConnection();
 

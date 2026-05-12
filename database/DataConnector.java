@@ -1,13 +1,15 @@
+package database;
+
 import java.sql.*;
 
-public class DatabaseConnector {
+public class DataConnector {
 
     private String url      = "jdbc:mysql://localhost:3306/users";
     private String username = "root";
     private String password = "new_password";
     private Connection con;
 
-    public DatabaseConnector() {
+    public DataConnector() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(url, username, password);

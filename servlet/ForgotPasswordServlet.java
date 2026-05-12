@@ -5,7 +5,8 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.*;
 import java.util.Random;
-import database.DatabaseConnector;
+
+import database.DataConnector;
 
 @WebServlet("/forgotpassword")      // matches action="forgotpassword"
 public class ForgotPasswordServlet extends HttpServlet {
@@ -20,7 +21,7 @@ public class ForgotPasswordServlet extends HttpServlet {
         if (step.equals("1")) {
             String email = request.getParameter("email");
 
-            DatabaseConnector db = new DatabaseConnector();
+            DataConnector db = new DataConnector();
             boolean emailExists = db.emailExists(email);   // new method needed (see below)
             db.closeConnection();
 
@@ -61,7 +62,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             }
 
             // OTP valid — reset the password
-            DatabaseConnector db = new DatabaseConnector();
+            DataConnector db = new DataConnector();
             boolean success = db.resetPassword(email, newPassword);
             db.closeConnection();
 

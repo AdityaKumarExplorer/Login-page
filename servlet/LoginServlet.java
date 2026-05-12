@@ -1,10 +1,10 @@
 package servlet;
 
+import database.DataConnector;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.*;
-import database.DatabaseConnector;
 
 @WebServlet("/login")          // matches action="login" in Login.jsp
 public class LoginServlet extends HttpServlet {
@@ -16,7 +16,7 @@ public class LoginServlet extends HttpServlet {
         String email    = request.getParameter("email");
         String password = request.getParameter("password");
 
-        DatabaseConnector db = new DatabaseConnector();
+        DataConnector db = new DataConnector();
         boolean isValid = db.checkLogin(email, password);
         db.closeConnection();
 
