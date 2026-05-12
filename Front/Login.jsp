@@ -9,12 +9,11 @@
         <div class="login form">
         <h2>Login page</h2>
 
-        <%-- Display error message if redirected back from Servlet with an error --%>
         <% if(request.getParameter("error") != null) { %>
             <p style="color:red;">Login failed. Please check your credentials.</p>
         <% } %>
 
-        <form action="login" method="post"> <%-- Action points to Servlet --%>
+        <form action="login" method="post">
             <p>Please use your credentials to login</p>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" placeholder="Email" required>

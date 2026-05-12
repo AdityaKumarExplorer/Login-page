@@ -26,7 +26,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             db.closeConnection();
 
             if (!emailExists) {
-                response.sendRedirect("Front/ForgotPassword.jsp?error=notfound");
+                response.sendRedirect("ForgotPassword.jsp?error=notfound");
                 return;
             }
 
@@ -41,7 +41,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             System.out.println("OTP for " + email + ": " + otp);
 
             // Go to step 2
-            response.sendRedirect("Front/ForgotPassword.jsp?step=2&email="
+            response.sendRedirect("ForgotPassword.jsp?step=2&email="
                 + java.net.URLEncoder.encode(email, "UTF-8") + "&success=1");
 
         // ── STEP 2: Verify OTP and reset password ──
@@ -56,7 +56,7 @@ public class ForgotPasswordServlet extends HttpServlet {
 
             // Check OTP matches and is for the right email
             if (savedOtp == null || !savedOtp.equals(enteredOtp)|| !savedEmail.equals(email)) {
-                response.sendRedirect("Front/ForgotPassword.jsp?step=2&email="
+                response.sendRedirect("ForgotPassword.jsp?step=2&email="
                     + java.net.URLEncoder.encode(email, "UTF-8") + "&error=invalidotp");
                 return;
             }
@@ -71,9 +71,9 @@ public class ForgotPasswordServlet extends HttpServlet {
             session.removeAttribute("otpEmail");
 
             if (success) {
-                response.sendRedirect("Front/Login.jsp");
+                response.sendRedirect("Login.jsp");
             } else {
-                response.sendRedirect("Front/ForgotPassword.jsp?error=failed");
+                response.sendRedirect("ForgotPassword.jsp?error=failed");
             }
         }
     }

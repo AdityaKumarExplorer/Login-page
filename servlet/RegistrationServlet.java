@@ -20,7 +20,7 @@ public class RegistrationServlet extends HttpServlet {
 
         // 1. Check passwords match before touching the DB
         if (!password.equals(confirmPassword)) {
-            response.sendRedirect("Front/Registration.jsp?error=mismatch");
+            response.sendRedirect("Registration.jsp?error=mismatch");
             return;
         }
 
@@ -31,13 +31,13 @@ public class RegistrationServlet extends HttpServlet {
 
         switch (result) {
             case "success":
-                response.sendRedirect("Front/Login.jsp");          // go login
+                response.sendRedirect("Login.jsp");          // go login
                 break;
             case "exists":
-                response.sendRedirect("Front/Registration.jsp?error=exists");
+                response.sendRedirect("Registration.jsp?error=exists");
                 break;
             default:
-                response.sendRedirect("Front/Registration.jsp?error=failed");
+                response.sendRedirect("Registration.jsp?error=failed");
         }
     }
 }

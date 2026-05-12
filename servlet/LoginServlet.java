@@ -23,10 +23,10 @@ public class LoginServlet extends HttpServlet {
         if (isValid) {
             HttpSession session = request.getSession();
             session.setAttribute("user", email);
-            response.sendRedirect("Front/Main.jsp");
+            response.sendRedirect("Main.jsp");
         } else {
             // getParameter("error") in JSP means we pass it as a URL param
-            response.sendRedirect("Front/Login.jsp?error=1");
+            response.sendRedirect("Login.jsp?error=1");
         }
     }
 }
