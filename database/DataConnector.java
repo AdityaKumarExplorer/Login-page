@@ -26,9 +26,23 @@ public class DataConnector {
             pstmt.setString(1, email);
             pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
-            return rs.next();  // true = found, false = not found
+            return rs.next();
         } catch (Exception ex) {
             System.out.println("Login error: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    // Returns true if email exists in the database
+    public boolean emailExists(String email) {
+        try {
+            String query = "SELECT * FROM user WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();   // true = found, false = not found
+        } catch (Exception ex) {
+            System.out.println("Email check error: " + ex.getMessage());
             return false;
         }
     }
@@ -42,7 +56,7 @@ public class DataConnector {
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
-                return "exists";   // email already registered
+                return "exists";
             }
 
             String insertQuery = "INSERT INTO user (email, password) VALUES (?, ?)";
