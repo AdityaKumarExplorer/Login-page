@@ -25,7 +25,7 @@
         .bg {
             position: fixed;
             inset: 0;
-            background-image: url('css/bg.jpg');
+            background-image: url('css/bg.png');
             background-size: cover;
             background-position: center;
             animation: slowZoom 30s ease-in-out infinite alternate;
