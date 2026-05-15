@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DataConnector {
 
-    private String url      = "jdbc:mysql://localhost:3306/users";
+    private String url      = "jdbc:mysql://localhost:3306/login/users";
     private String username = "root";
     private String password = "new_password";
     private Connection con;
