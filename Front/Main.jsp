@@ -25,7 +25,7 @@
         .bg {
             position: fixed;
             inset: 0;
-            background-image: url('css/bg.png');
+            background-image: url('css/Torii Gate 4K Wallpapers - Top Free Torii Gate 4K Backgrounds - WallpaperAccess.jpeg');
             background-size: cover;
             background-position: center;
             animation: slowZoom 30s ease-in-out infinite alternate;

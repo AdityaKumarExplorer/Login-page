@@ -21,7 +21,7 @@ public class DataConnector {
     // Returns true if login is valid
     public boolean checkLogin(String email, String password) {
         try {
-            String query = "SELECT * FROM user WHERE email = ? AND password = ?";
+            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, email);
             pstmt.setString(2, password);
@@ -36,7 +36,7 @@ public class DataConnector {
     // Returns true if email exists in the database
     public boolean emailExists(String email) {
         try {
-            String query = "SELECT * FROM user WHERE email = ?";
+            String query = "SELECT * FROM users WHERE email = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, email);
             ResultSet rs = pstmt.executeQuery();
@@ -50,7 +50,7 @@ public class DataConnector {
     // Returns "success", "exists", or "error"
     public String registerUser(String email, String password) {
         try {
-            String checkQuery = "SELECT * FROM user WHERE email = ?";
+            String checkQuery = "SELECT * FROM users WHERE email = ?";
             PreparedStatement checkStmt = con.prepareStatement(checkQuery);
             checkStmt.setString(1, email);
             ResultSet rs = checkStmt.executeQuery();
@@ -59,7 +59,7 @@ public class DataConnector {
                 return "exists";
             }
 
-            String insertQuery = "INSERT INTO user (email, password) VALUES (?, ?)";
+            String insertQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
             PreparedStatement pstmt = con.prepareStatement(insertQuery);
             pstmt.setString(1, email);
             pstmt.setString(2, password);
@@ -75,7 +75,7 @@ public class DataConnector {
     // Returns true if email exists and password was updated
     public boolean resetPassword(String email, String newPassword) {
         try {
-            String query = "UPDATE user SET password = ? WHERE email = ?";
+            String query = "UPDATE users SET password = ? WHERE email = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, newPassword);
             pstmt.setString(2, email);
