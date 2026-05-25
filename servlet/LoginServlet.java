@@ -6,7 +6,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.*;
 
-@WebServlet("/login")          // matches action="login" in Login.jsp
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     @Override
@@ -16,6 +16,20 @@ public class LoginServlet extends HttpServlet {
         String email    = request.getParameter("email");
         String password = request.getParameter("password");
 
+        // ── Verify CAPTCHA first ──────────────────────────────────
+        String enteredCaptcha = request.getParameter("captchaInput");
+        String savedCaptcha   = (String) request.getSession().getAttribute("captcha");
+
+        if (savedCaptcha == null || !savedCaptcha.equals(enteredCaptcha)) {
+            response.sendRedirect("Login.jsp?error=captcha");
+            return;
+        }
+
+        // Clear used CAPTCHA from session
+        request.getSession().removeAttribute("captcha");
+        // ─────────────────────────────────────────────────────────
+
+        // ── Check login credentials ───────────────────────────────
         DataConnector db = new DataConnector();
         boolean isValid = db.checkLogin(email, password);
         db.closeConnection();
@@ -25,7 +39,6 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("user", email);
             response.sendRedirect("Main.jsp");
         } else {
-            // getParameter("error") in JSP means we pass it as a URL param
             response.sendRedirect("Login.jsp?error=1");
         }
     }

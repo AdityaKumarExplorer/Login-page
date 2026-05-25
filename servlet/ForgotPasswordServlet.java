@@ -36,9 +36,12 @@ public class ForgotPasswordServlet extends HttpServlet {
             session.setAttribute("otp", otp);
             session.setAttribute("otpEmail", email);
 
-            // In production: email the OTP using JavaMail
-            // For now: print to console for testing
+            database.EmailService.sendOTP(email, otp);
+            
+            /* In production: email the OTP using JavaMail
+            For now: print to console for testing
             System.out.println("OTP for " + email + ": " + otp);
+            */
 
             // Go to step 2
             response.sendRedirect("ForgotPassword.jsp?step=2&email="
