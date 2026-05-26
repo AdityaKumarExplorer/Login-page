@@ -21,13 +21,29 @@
         <div class="login form">
             <h2>Login page</h2>
 
-            <% if(request.getParameter("error") != null) { 
+            <% if(request.getParameter("error") != null) {
                 String error = request.getParameter("error"); %>
                 <% if("captcha".equals(error)) { %>
                     <p style="color:red;">Incorrect CAPTCHA. Please try again.</p>
+                <% } else if("locked".equals(error)) {
+                    String mins = request.getParameter("mins"); %>
+                    <p style="color:red;">
+                        Too many failed attempts. Try again in
+                        <%= mins != null ? mins : "15" %> minute(s).
+                    </p>
                 <% } else { %>
                     <p style="color:red;">Login failed. Please check your credentials.</p>
                 <% } %>
+            <% } %>
+
+            <%-- Show attempts warning after 3rd fail --%>
+            <%
+                Integer attempts = (Integer) session.getAttribute("loginAttempts");
+                if (attempts != null && attempts >= 3 && attempts < 5) {
+            %>
+                <p style="color:orange;">
+                    Warning: <%= 5 - attempts %> attempt(s) remaining before lockout.
+                </p>
             <% } %>
 
             <form action="login" method="post" onsubmit="return validateCaptcha()">
@@ -134,10 +150,9 @@
                 if (input !== captchaText) {
                     document.getElementById("captchaError").style.display = "block";
                     document.getElementById("captchaInput").value = "";
-                    refreshCaptcha();  // fetch new one from server, no reload
+                    refreshCaptcha();
                     return false;
                 }
-                // Pre-fetch new CAPTCHA in background before page redirects back
                 fetch("refreshCaptcha")
                     .then(function(res) { return res.text(); })
                     .then(function(newText) { captchaText = newText.trim(); });

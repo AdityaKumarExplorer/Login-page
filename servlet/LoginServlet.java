@@ -1,6 +1,7 @@
 package servlet;
 
 import database.DataConnector;
+import database.EmailService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,8 +26,29 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // Clear used CAPTCHA from session
         request.getSession().removeAttribute("captcha");
+        // ─────────────────────────────────────────────────────────
+
+        // ── Track login attempts + timed lockout ──────────────────
+        HttpSession session = request.getSession();
+        Integer attempts    = (Integer) session.getAttribute("loginAttempts");
+        Long    lockoutTime = (Long)    session.getAttribute("lockoutTime");
+
+        if (attempts == null) attempts = 0;
+
+        // Check if currently locked out
+        if (lockoutTime != null) {
+            if (System.currentTimeMillis() < lockoutTime) {
+                long minutesLeft = ((lockoutTime - System.currentTimeMillis()) / 60000) + 1;
+                response.sendRedirect("Login.jsp?error=locked&mins=" + minutesLeft);
+                return;
+            } else {
+                // Lockout expired — reset
+                session.removeAttribute("loginAttempts");
+                session.removeAttribute("lockoutTime");
+                attempts = 0;
+            }
+        }
         // ─────────────────────────────────────────────────────────
 
         // ── Check login credentials ───────────────────────────────
@@ -35,11 +57,29 @@ public class LoginServlet extends HttpServlet {
         db.closeConnection();
 
         if (isValid) {
-            HttpSession session = request.getSession();
+            session.removeAttribute("loginAttempts");
+            session.removeAttribute("lockoutTime");
             session.setAttribute("user", email);
+            EmailService.sendLoginConfirmation(email);
             response.sendRedirect("Main.jsp");
+
         } else {
-            response.sendRedirect("Login.jsp?error=1");
+            attempts++;
+            session.setAttribute("loginAttempts", attempts);
+
+            // Alert on 3rd failed attempt and beyond
+            if (attempts >= 3) {
+                EmailService.sendLoginAttemptAlert(email);
+            }
+
+            // Lock after 5 failed attempts for 15 minutes
+            if (attempts >= 5) {
+                session.setAttribute("lockoutTime",
+                    System.currentTimeMillis() + (15 * 60 * 1000));
+                response.sendRedirect("Login.jsp?error=locked&mins=15");
+            } else {
+                response.sendRedirect("Login.jsp?error=1");
+            }
         }
     }
 }

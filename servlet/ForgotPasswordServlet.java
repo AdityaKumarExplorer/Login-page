@@ -7,8 +7,9 @@ import java.io.*;
 import java.util.Random;
 
 import database.DataConnector;
+import database.EmailService;
 
-@WebServlet("/forgotpassword")      // matches action="forgotpassword"
+@WebServlet("/forgotpassword")
 public class ForgotPasswordServlet extends HttpServlet {
 
     @Override
@@ -22,7 +23,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             String email = request.getParameter("email");
 
             DataConnector db = new DataConnector();
-            boolean emailExists = db.emailExists(email);   // new method needed (see below)
+            boolean emailExists = db.emailExists(email);
             db.closeConnection();
 
             if (!emailExists) {
@@ -30,20 +31,16 @@ public class ForgotPasswordServlet extends HttpServlet {
                 return;
             }
 
-            // Generate a 6-digit OTP and store in session
+            // Generate OTP and store in session with expiry
             String otp = String.format("%06d", new Random().nextInt(999999));
             HttpSession session = request.getSession();
             session.setAttribute("otp", otp);
             session.setAttribute("otpEmail", email);
+            session.setAttribute("otpExpiry", System.currentTimeMillis() + (2 * 60 * 1000)); // 2 minutes
 
-            database.EmailService.sendOTP(email, otp);
-            
-            /* In production: email the OTP using JavaMail
-            For now: print to console for testing
-            System.out.println("OTP for " + email + ": " + otp);
-            */
+            // Send OTP email
+            EmailService.sendOTP(email, otp);
 
-            // Go to step 2
             response.sendRedirect("ForgotPassword.jsp?step=2&email="
                 + java.net.URLEncoder.encode(email, "UTF-8") + "&success=1");
 
@@ -56,9 +53,19 @@ public class ForgotPasswordServlet extends HttpServlet {
             HttpSession session = request.getSession();
             String savedOtp     = (String) session.getAttribute("otp");
             String savedEmail   = (String) session.getAttribute("otpEmail");
+            Long   otpExpiry    = (Long)   session.getAttribute("otpExpiry");
+
+            // Check OTP expiry
+            if (otpExpiry == null || System.currentTimeMillis() > otpExpiry) {
+                session.removeAttribute("otp");
+                session.removeAttribute("otpEmail");
+                session.removeAttribute("otpExpiry");
+                response.sendRedirect("ForgotPassword.jsp?error=expired");
+                return;
+            }
 
             // Check OTP matches and is for the right email
-            if (savedOtp == null || !savedOtp.equals(enteredOtp)|| !savedEmail.equals(email)) {
+            if (savedOtp == null || !savedOtp.equals(enteredOtp) || !savedEmail.equals(email)) {
                 response.sendRedirect("ForgotPassword.jsp?step=2&email="
                     + java.net.URLEncoder.encode(email, "UTF-8") + "&error=invalidotp");
                 return;
@@ -72,8 +79,10 @@ public class ForgotPasswordServlet extends HttpServlet {
             // Clear OTP from session
             session.removeAttribute("otp");
             session.removeAttribute("otpEmail");
+            session.removeAttribute("otpExpiry");
 
             if (success) {
+                EmailService.sendPasswordChangedAlert(email);
                 response.sendRedirect("Login.jsp");
             } else {
                 response.sendRedirect("ForgotPassword.jsp?error=failed");
